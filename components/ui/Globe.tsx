@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { Color, PerspectiveCamera, Vector3 } from "three";
+import { Color, Vector3 } from "three";
 import ThreeGlobe from "three-globe";
 import countries from "@/data/globe.json";
 
@@ -45,9 +45,10 @@ interface WorldProps {
 }
 
 const safeColor = (hex?: string) => hex || "#ffffff";
+const RING_PROPAGATION_SPEED = 3;
 
 function GlobeWrapper({ globeConfig, data }: WorldProps) {
-  const globeRef = useRef<ThreeGlobe>();
+  const globeRef = useRef<ThreeGlobe | null>(null);
   const [globeData, setGlobeData] = useState<any[]>([]);
 
   const defaultProps: GlobeConfig = {
@@ -69,10 +70,11 @@ function GlobeWrapper({ globeConfig, data }: WorldProps) {
     ...globeConfig,
   };
 
+  // Build points and arcs on mount or data change
   useEffect(() => {
     if (!globeRef.current) return;
 
-    // Build globe material
+    // Setup globe material
     const mat = globeRef.current.globeMaterial() as any;
     mat.color = new Color(safeColor(defaultProps.globeColor));
     mat.emissive = new Color(safeColor(defaultProps.emissive));
@@ -99,7 +101,7 @@ function GlobeWrapper({ globeConfig, data }: WorldProps) {
     });
     setGlobeData(points);
 
-    // Set polygons & atmosphere
+    // Hex polygons + atmosphere
     globeRef.current
       .hexPolygonsData(countries.features)
       .hexPolygonResolution(3)
@@ -120,9 +122,9 @@ function GlobeWrapper({ globeConfig, data }: WorldProps) {
       .arcDashAnimateTime(defaultProps.arcTime!);
   }, [data]);
 
+  // Points and rings animation
   useEffect(() => {
-    if (!globeRef.current) return;
-    if (!globeData.length) return;
+    if (!globeRef.current || globeData.length === 0) return;
 
     globeRef.current
       .pointsData(globeData)
@@ -131,7 +133,7 @@ function GlobeWrapper({ globeConfig, data }: WorldProps) {
       .pointRadius(defaultProps.pointSize);
 
     // Rings animation
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       if (!globeRef.current) return;
       const randomIndices: number[] = [];
       while (randomIndices.length < Math.floor((globeData.length * 4) / 5)) {
@@ -144,7 +146,7 @@ function GlobeWrapper({ globeConfig, data }: WorldProps) {
     return () => clearInterval(interval);
   }, [globeData]);
 
-  return <primitive object={globeRef.current ?? new ThreeGlobe()} ref={globeRef} />;
+  return <primitive ref={globeRef} object={new ThreeGlobe()} />;
 }
 
 const aspect = 1.2;
@@ -152,14 +154,27 @@ const cameraZ = 300;
 
 export function World({ globeConfig, data }: WorldProps) {
   return (
-    <Canvas camera={new PerspectiveCamera(50, aspect, 180, 1800)}>
+    <Canvas camera={{ fov: 50, position: [0, 0, cameraZ], near: 180, far: 1800 }}>
+      {/* Lights */}
       <ambientLight color={safeColor(globeConfig?.ambientLight)} intensity={0.6} />
-      <directionalLight color={safeColor(globeConfig?.directionalLeftLight)} position={new Vector3(-400, 100, 400)} />
-      <directionalLight color={safeColor(globeConfig?.directionalTopLight)} position={new Vector3(-200, 500, 200)} />
-      <pointLight color={safeColor(globeConfig?.pointLight)} position={new Vector3(-200, 500, 200)} intensity={0.8} />
+      <directionalLight
+        color={safeColor(globeConfig?.directionalLeftLight)}
+        position={new Vector3(-400, 100, 400)}
+      />
+      <directionalLight
+        color={safeColor(globeConfig?.directionalTopLight)}
+        position={new Vector3(-200, 500, 200)}
+      />
+      <pointLight
+        color={safeColor(globeConfig?.pointLight)}
+        position={new Vector3(-200, 500, 200)}
+        intensity={0.8}
+      />
 
+      {/* Globe */}
       <GlobeWrapper globeConfig={globeConfig} data={data} />
 
+      {/* Controls */}
       <OrbitControls
         enablePan={false}
         enableZoom={false}
