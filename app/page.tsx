@@ -7,6 +7,8 @@ import { navItems } from "@/data";
 import Grid from "@/components/Grid";
 import Footer from "@/components/Footer";
 import Approach from "@/components/Approach";
+import AboutMe from "@/components/AboutMe";
+import SkillGalaxy from "@/components/SkillGalaxy";
 
 export default function Home() {
   return (
@@ -16,6 +18,8 @@ export default function Home() {
         <Hero />
         <Grid/>
         <RecentProjects />
+        <SkillGalaxy/>
+        <AboutMe/>
         <Approach />
         <Footer/>
       </div>

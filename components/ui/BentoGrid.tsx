@@ -75,10 +75,15 @@ export const BentoGridItem = ({
     },
   };
 
-  const handleCopy = () => {
-    const text = "hsu@jsmastery.pro";
-    navigator.clipboard.writeText(text);
-    setCopied(true);
+    const handleCopy = () => {
+    const email = "myanikaislam1920@gmail.com"; 
+    navigator.clipboard.writeText(email)
+      .then(() => {
+        setCopied(true);
+        
+        setTimeout(() => setCopied(false), 1000);
+      })
+      .catch(() => alert("Failed to copy email!"));
   };
 
   return (
@@ -174,15 +179,10 @@ export const BentoGridItem = ({
           )}
           {id === 6 && (
             <div className="mt-5 relative">
-              {/* button border magic from tailwind css buttons  */}
-              {/* add rounded-md h-8 md:h-8, remove rounded-full */}
-              {/* remove focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 */}
-              {/* add handleCopy() for the copy the text */}
               <div
                 className={`absolute -bottom-5 right-0 ${copied ? "block" : "block"
                   }`}
               >
-                {/* <img src="/confetti.gif" alt="confetti" /> */}
                 <Lottie options={defaultOptions} height={200} width={400} />
               </div>
 
