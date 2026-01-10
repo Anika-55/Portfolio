@@ -7,7 +7,7 @@ import { TextGenerateEffect } from "./ui/TextGenerateEffect";
 
 const Hero = () => {
   return (
-    <section className="relative pb-20 pt-36 overflow-hidden">
+    <section className="relative pb-20 pt-36 overflow-hidden mt-12">
       {/* Spotlight layers */}
       <Spotlight
         className="-top-40 -left-10 md:-left-32 md:-top-20 h-screen w-screen"
@@ -29,17 +29,17 @@ const Hero = () => {
       />
 
       {/* Hero content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen mt-17">
         <div className="max-w-[89vw] md:max-w-2xl lg:max-w-[60vw] flex flex-col items-center text-center">
           {/* Small heading */}
           <p className="uppercase tracking-widest text-xs text-blue-100 mb-1">
-            Dynamic Web Magic with Next.js
+            FULL STACK WEB DEV.READY TO work
           </p>
 
           {/* Main animated text */}
           <TextGenerateEffect
             words="Transforming Concepts into Seamless User Experiences"
-            className="text-[40px] md:text-5xl lg:text-6xl font-bold mb-6 mt-1"
+            className="text-[40px] md:text-5xl lg:text-6xl font-bold mb-6 mt-1    "
           />
  
           {/* Description */}

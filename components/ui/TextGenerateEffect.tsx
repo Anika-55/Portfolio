@@ -29,19 +29,24 @@ export const TextGenerateEffect = ({
   const renderWords = () => {
     return (
       <motion.div ref={scope}>
-        {wordsArray.map((word, idx) => {
-          return (
-            <motion.span
-              key={word + idx}
-              // change here if idx is greater than 3, change the text color to #CBACF9
-              className={` ${idx > 3 ? "text-purple" : "dark:text-white text-black"
-                } opacity-0`}
-            >
-              {word}{" "}
-            </motion.span>
-          );
-        })}
-      </motion.div>
+  {wordsArray.map((word, idx) => {
+    return (
+      <motion.span
+        key={word + idx}
+        className={`
+          opacity-0 
+          ${idx > 3 
+            ? "text-[#CBACF9]" 
+            : "bg-gradient-to-r from-purple-400 via-blue-500 to-green-200 bg-clip-text text-transparent"
+          }
+        `}
+      >
+        {word}{" "}
+      </motion.span>
+    );
+  })}
+</motion.div>
+
     );
   };
 

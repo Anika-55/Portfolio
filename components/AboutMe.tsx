@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+
 export default function AboutMe() {
   return (
     <section className="min-h-screen bg-black text-white flex flex-col lg:flex-row items-center px-6 md:px-12 lg:px-20 gap-12 lg:gap-20 relative overflow-hidden ">
@@ -18,11 +19,11 @@ export default function AboutMe() {
         className="w-full lg:w-1/2 relative flex justify-center"
       >
         <Image
-          src="/profileImg.webp"
+          src="/profileImage.jpg"
           alt="profile"
           width={520}
           height={600}
-          className="grayscale rounded-lg object-cover"
+          className=""
         />
       </motion.div>
 
