@@ -77,14 +77,14 @@ export const projects = [
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/fm.svg"],
     link: "https://serene-fenglisu-9a621a.netlify.app",
   },
-  // {
-  //   id: 2,
-  //   title: "Yoom - Video Conferencing App",
-  //   des: "Simplify your video conferencing experience with Yoom. Seamlessly connect with colleagues and friends.",
-  //   img: "/p2.svg",
-  //   iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
-  //   link: "https://serene-fenglisu-9a621a.netlify.app",
-  // },
+  {
+    id: 2,
+    title: "Resume Builder App",
+    des: "A Resume Builder App that allows users to create and customize professional resumes with ease.",
+    img: "/resume-website.png",
+    iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
+    link: "https://strong-profiterole-5bb844.netlify.app",
+  },
   {
     id: 3,
     title: "Car Rental Website",
