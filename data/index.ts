@@ -87,6 +87,14 @@ export const projects = [
   },
   {
     id: 3,
+    title: "AI NewsLetter Generator",
+    des: "An AI-powered newsletter generator that creates engaging and informative newsletters based on user preferences and topics.",
+    img: "/ai-newsletter.png",
+    iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/c.svg"],
+    link: "https://news-letter-nextjs-website-qqos.vercel.app",
+  },
+  {
+    id: 4,
     title: "Car Rental Website",
     des: "A car rental website . By React , JavaScript , TailwindCSS , express , mongodb , mongoose. Still working on in to improve all functionality..",
     img: "/car-rental.png",
@@ -94,7 +102,7 @@ export const projects = [
     link: "https://keen-begonia-a8bec9.netlify.app",
   },
   {
-    id: 4,
+    id: 5,
     title: "Animated Game-Zoon Website",
     des: "It's a cool animated UI for game lover, combining GSAP animations and  effects..",
     img: "/game-zoon2.png",
