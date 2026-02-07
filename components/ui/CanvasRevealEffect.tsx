@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import React, { useMemo, useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 
 interface CanvasRevealEffectProps {
@@ -22,16 +22,25 @@ export const CanvasRevealEffect: React.FC<CanvasRevealEffectProps> = ({
   dotSize = 2,
   showGradient = true,
 }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  // Lazy load after mount
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
   return (
     <div className={cn("h-full relative w-full bg-white", containerClassName)}>
-      <Canvas className="absolute inset-0 h-full w-full">
-        <DotMatrix
-          colors={colors}
-          opacities={opacities}
-          dotSize={dotSize}
-          animationSpeed={animationSpeed}
-        />
-      </Canvas>
+      {loaded && (
+        <Canvas className="absolute inset-0 h-full w-full">
+          <DotMatrix
+            colors={colors}
+            opacities={opacities}
+            dotSize={dotSize}
+            animationSpeed={animationSpeed}
+          />
+        </Canvas>
+      )}
       {showGradient && (
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-[84%]" />
       )}
@@ -52,79 +61,47 @@ const DotMatrix: React.FC<DotMatrixProps> = ({
   dotSize = 2,
   animationSpeed = 0.4,
 }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const { size } = useThree();
+  const meshRef = useRef<THREE.InstancedMesh>(null);
 
-  // Prepare uniforms
-  const uniforms = useMemo(() => {
-    const colorsArray =
-      colors.length === 1
-        ? Array(6).fill(colors[0])
-        : colors.length === 2
-        ? [colors[0], colors[0], colors[0], colors[1], colors[1], colors[1]]
-        : [colors[0], colors[0], colors[1], colors[1], colors[2], colors[2]];
+  const numDotsX = 50; // fewer dots horizontally
+  const numDotsY = 30; // fewer dots vertically
+  const totalDots = numDotsX * numDotsY;
 
-    return {
-      u_colors: {
-        value: colorsArray.map((c) => new THREE.Vector3(c[0] / 255, c[1] / 255, c[2] / 255)),
-      },
-      u_opacities: { value: opacities },
-      u_time: { value: 0 },
-      u_dot_size: { value: dotSize },
-      u_total_size: { value: dotSize * 2 },
-      u_resolution: { value: new THREE.Vector2(size.width, size.height) },
-    };
-  }, [colors, opacities, dotSize, size.width, size.height]);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
 
-  // Animate u_time
+  const colorsArray = useMemo(() => {
+    return Array.from({ length: totalDots }, (_, i) => {
+      const color = colors[i % colors.length];
+      return new THREE.Color(color[0] / 255, color[1] / 255, color[2] / 255);
+    });
+  }, [colors, totalDots]);
+
+  const opacitiesArray = useMemo(() => {
+    return Array.from({ length: totalDots }, (_, i) => opacities[i % opacities.length]);
+  }, [opacities, totalDots]);
+
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
-    (meshRef.current.material as THREE.ShaderMaterial).uniforms.u_time.value =
-      clock.getElapsedTime() * animationSpeed;
+    let index = 0;
+    for (let i = 0; i < numDotsX; i++) {
+      for (let j = 0; j < numDotsY; j++) {
+        const x = (i - numDotsX / 2) * dotSize * 2;
+        const y = (j - numDotsY / 2) * dotSize * 2;
+        dummy.position.set(x, y, 0);
+        dummy.updateMatrix();
+        meshRef.current.setMatrixAt(index, dummy.matrix);
+        meshRef.current.setColorAt(index, colorsArray[index].clone().multiplyScalar(opacitiesArray[index] * Math.abs(Math.sin(clock.elapsedTime * animationSpeed + index))));
+        index++;
+      }
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+    meshRef.current.instanceColor!.needsUpdate = true;
   });
 
-  // Shader material
-  const material = useMemo(() => {
-    return new THREE.ShaderMaterial({
-      uniforms,
-      vertexShader: `
-        precision mediump float;
-        varying vec2 vFragCoord;
-        void main() {
-          vFragCoord = position.xy;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        precision mediump float;
-        varying vec2 vFragCoord;
-        uniform vec3 u_colors[6];
-        uniform float u_opacities[10];
-        uniform float u_time;
-        uniform float u_dot_size;
-        uniform float u_total_size;
-        uniform vec2 u_resolution;
-
-        float random(vec2 xy) {
-          return fract(tan(dot(xy ,vec2(12.9898,78.233))) * 43758.5453);
-        }
-
-        void main() {
-          vec2 st2 = floor((vFragCoord + u_resolution / 2.0) / u_total_size);
-          float show_offset = random(st2);
-          float rand = random(st2 + show_offset + floor(u_time * 5.0));
-          float opacity = u_opacities[int(mod(rand * 10.0, 10.0))];
-          vec3 color = u_colors[int(mod(show_offset * 6.0, 6.0))];
-          gl_FragColor = vec4(color, opacity);
-        }
-      `,
-    });
-  }, [uniforms]);
-
   return (
-    <mesh ref={meshRef}>
-      <planeGeometry args={[2, 2]} />
-      <primitive object={material} attach="material" />
-    </mesh>
+    <instancedMesh ref={meshRef} args={[undefined, undefined, totalDots]}>
+      <circleGeometry args={[dotSize, 6]} />
+      <meshBasicMaterial vertexColors transparent />
+    </instancedMesh>
   );
 };
