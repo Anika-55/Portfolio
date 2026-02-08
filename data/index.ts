@@ -69,29 +69,33 @@ export const gridItems = [
 ];
 
 export const projects = [
+ 
   {
     id: 1,
-    title: "Cool Animated UI",
-    des: "Explore the wonders modern Cocktail website UI with smooth animation.",
-    img: "/cocktailUI.png",
-    iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/fm.svg"],
-    link: "https://serene-fenglisu-9a621a.netlify.app",
-  },
-  {
-    id: 2,
     title: "Resume Builder App",
     des: "A Resume Builder App that allows users to create and customize professional resumes with ease.",
     img: "/resume-website.png",
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/stream.svg", "/c.svg"],
     link: "https://strong-profiterole-5bb844.netlify.app",
+    github: "https://github.com/yourusername/resume-builder",
   },
   {
-    id: 3,
+    id: 2,
     title: "AI NewsLetter Generator",
     des: "An AI-powered newsletter generator that creates engaging and informative newsletters based on user preferences and topics.",
     img: "/ai-newsletter.png",
     iconLists: ["/next.svg", "/tail.svg", "/ts.svg", "/c.svg"],
     link: "https://news-letter-nextjs-website-qqos.vercel.app",
+    github: "https://github.com/yourusername/ai-newsletter-generator",
+  },
+   {
+    id: 3,
+    title: "Cool Animated UI",
+    des: "Explore the wonders modern Cocktail website UI with smooth animation.",
+    img: "/cocktailUI.png",
+    iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/fm.svg"],
+    link: "https://serene-fenglisu-9a621a.netlify.app",
+    github: "https://github.com/yourusername/cocktail-ui", // <-- Add this
   },
   {
     id: 4,
@@ -100,6 +104,7 @@ export const projects = [
     img: "/car-rental.png",
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg"],
     link: "https://keen-begonia-a8bec9.netlify.app",
+    github: "https://github.com/yourusername/car-rental-website",
   },
   {
     id: 5,
@@ -108,8 +113,10 @@ export const projects = [
     img: "/game-zoon2.png",
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/gsap.svg"],
     link: "https://silver-sunburst-b836a7.netlify.app",
+    github: "https://github.com/yourusername/game-zoon-website",
   },
 ];
+
 
 export const testimonials = [
   {
